@@ -1,16 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Request, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@Controller('Jobs')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller('jobs')
 export class JobsController {
   constructor(private readonly JobsService: JobsService) {}
 
   @Post()
-  create(@Body() data: CreateJobDto) {
+  create(@Request() req, @Body() data: CreateJobDto) {
     data.user = {
-      connect: { id: 1 }
+      connect: { id: req.user.id }
     }
     if (data.categoryIds) {
       // data.categories = {
