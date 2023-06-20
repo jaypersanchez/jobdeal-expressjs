@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
   @ApiProperty()
-  firstName: string;
+  firstName?: string;
 
   @ApiProperty()
-  lastName: string;
+  lastName?: string;
 
   @ApiProperty()
   email: string;
@@ -14,29 +14,29 @@ export class CreateUserDto {
   password: string;
 
   @ApiProperty()
-  address: string;
+  address?: string;
 
   @ApiProperty()
-  zip: string;
+  zip?: string;
 
   @ApiProperty()
-  city: string;
+  city?: string;
 
   @ApiProperty()
-  country: string;
+  country?: string;
 
   @ApiProperty()
-  locale: string;
+  locale?: string;
 
   @ApiProperty()
-  avatar: string;
+  avatar?: string;
 
   @ApiProperty()
-  lat: string;
+  lat?: string;
 
   @ApiProperty()
-  lng: string;
+  lng?: string;
 
   @ApiProperty()
-  timezone: string;
+  timezone?: string;
 }
