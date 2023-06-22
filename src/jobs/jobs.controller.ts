@@ -1,29 +1,35 @@
-import { Controller, Get, Post, Body, Request, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Request, Patch, Param, Delete, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApplicantsService } from 'src/applicants/applicants.service';
-import { Applicant } from '@prisma/client';
 import { ApplyJobDto } from './dto/apply-job.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('jobs')
 export class JobsController {
   constructor(private readonly jobsService: JobsService, private readonly applicantsService: ApplicantsService) {}
 
   @Post()
-  create(@Request() req, @Body() data: CreateJobDto) {
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('files'))
+  create(@Request() req, @Body() data: CreateJobDto, @UploadedFiles() files: Express.Multer.File[]) {
+    console.log(data)
+    data.price = +data.price;
     data.user = {
       connect: { id: req.user.id }
     }
     if (data.categoryIds) {
-      // data.categories = {
-      //   connect: { ids: data.categoryIds }
-      // }
+      data.categories = {
+        connect: { id: +data.categoryIds[0] }
+      }
     }
+    data.images = files.map(image => image.path);
+    delete data.files
     delete data.categoryIds;
     return this.jobsService.create(data);
   }
@@ -56,6 +62,8 @@ export class JobsController {
     return this.jobsService.findOne({ id: +id });
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: UpdateJobDto) {
     if (data.categoryIds) {
@@ -67,11 +75,15 @@ export class JobsController {
     return this.jobsService.update({ id: +id }, data);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.jobsService.remove({ id: +id });
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post(':id/apply')
   async apply(@Request() req, @Param('id') id: string, @Body() data: ApplyJobDto) {
     const job = await this.jobsService.findOne({id: +id});

@@ -1,9 +1,14 @@
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { SERVE_STATIC_MODULE_OPTIONS } from '@nestjs/serve-static';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { join } from 'path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(
+    AppModule,
+  );
 
   const config = new DocumentBuilder()
     .setTitle('Jobdeal API')
@@ -13,6 +18,10 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   app.enableCors();
+  app.useStaticAssets(join(__dirname, '../..', 'uploads'), {
+    prefix: '/uploads',
+  });
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 

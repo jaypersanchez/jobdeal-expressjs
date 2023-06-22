@@ -5,12 +5,12 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Request() req, @Body() data: CreateCategoryDto) {
     data.user = {
@@ -53,6 +53,8 @@ export class CategoriesController {
     return this.categoriesService.findOne({ id: +id });
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: UpdateCategoryDto) {
     if (data.parentId) {
@@ -64,6 +66,8 @@ export class CategoriesController {
     return this.categoriesService.update({ id: +id }, data);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoriesService.remove({ id: +id });

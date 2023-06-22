@@ -63,7 +63,7 @@ model Category {
   parent            Category?  @relation("children", fields: [parentId], references: [id])
   parentId          Int?
   children          Category[] @relation("children")
-  name              String
+  name              String     @unique
   color             String?
   image             String?
   description       String
@@ -86,6 +86,7 @@ model Job {
   address           String?
   lat               String?
   lng               String?
+  images            String[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 }

@@ -10,17 +10,36 @@ export class CreateJobDto {
   @ApiProperty()
   price: number;
 
-  @ApiProperty()
-  address: string;
+  @ApiProperty({ required: false })
+  address?: string;
 
-  @ApiProperty()
-  lat: string;
+  @ApiProperty({ required: false })
+  lat?: string;
 
-  @ApiProperty()
-  lng: string;
+  @ApiProperty({ required: false })
+  lng?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    type: 'array',
+    required: false,
+    items: {
+      type: 'integer',
+    }
+  })
   categoryIds?: number[];
+
+  
+  @ApiProperty({
+    type: 'array',
+    required: false,
+    items: {
+      type: 'file',
+      format: 'binary',
+    }
+  })
+  files?: Express.Multer.File[]
+
+  images: string[];
 
   categories: object;
 
