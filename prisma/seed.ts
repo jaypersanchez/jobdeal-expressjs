@@ -68,7 +68,8 @@ async function main() {
       email: 'admin@admin.com',
       firstName: 'Admin',
       lastName: 'Admin',
-      role: 'ADMIN'
+      role: 'ADMIN',
+      password: 'password'
     },
   });
 
@@ -80,7 +81,8 @@ async function main() {
       email: 'john@doe.com',
       firstName: 'JOhn',
       lastName: 'Doe',
-      role: 'USER'
+      role: 'USER',
+      password: 'password'
     },
   });
 
