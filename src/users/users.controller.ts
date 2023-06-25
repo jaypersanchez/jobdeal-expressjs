@@ -45,7 +45,10 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: UpdateUserDto) {
+  update(@Request() req, @Param('id') id: string, @Body() data: UpdateUserDto) {
+    if (req.user.id === id) {
+      return { message: 'You can update your profile only', 'statusCode': 403 }
+    }
     return this.usersService.update({ id: +id }, data);
   }
 
