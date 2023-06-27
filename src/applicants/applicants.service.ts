@@ -5,7 +5,7 @@ import { Applicant, Prisma } from '@prisma/client';
 @Injectable()
 export class ApplicantsService {
   constructor(private prisma: PrismaService) {}
-  
+
   async create(data: Prisma.ApplicantCreateInput): Promise<Applicant> {
     return this.prisma.applicant.create({
       data,
@@ -37,7 +37,10 @@ export class ApplicantsService {
     });
   }
 
-  async update(where: Prisma.ApplicantWhereUniqueInput, data: Prisma.ApplicantUpdateInput): Promise<Applicant> {
+  async update(
+    where: Prisma.ApplicantWhereUniqueInput,
+    data: Prisma.ApplicantUpdateInput,
+  ): Promise<Applicant> {
     return this.prisma.applicant.update({
       data,
       where,

@@ -18,7 +18,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
           response.status(status).json({
             statusCode: status,
             message: message,
-            meta: meta
+            meta: meta,
           });
           break;
         }
@@ -57,7 +57,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
           break;
       }
     } else {
-      console.log("asdfasdf");
+      console.log('asdfasdf');
       const status = HttpStatus.INTERNAL_SERVER_ERROR;
       response.status(status).json({
         statusCode: status,

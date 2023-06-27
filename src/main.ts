@@ -6,9 +6,7 @@ import { AppModule } from './app.module';
 import { PrismaClientExceptionFilter } from './prisma/prisma-client-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(
-    AppModule,
-  );
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const config = new DocumentBuilder()
     .setTitle('Jobdeal API')

@@ -1,12 +1,19 @@
-import { Controller, Get, Post, Body, Request, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Request,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ApplicantsService } from './applicants.service';
 import { CreateApplicantDto } from './dto/create-applicant.dto';
 import { UpdateApplicantDto } from './dto/update-applicant.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('applicants')
 export class ApplicantsController {
   constructor(private readonly ApplicantsService: ApplicantsService) {}
@@ -14,11 +21,11 @@ export class ApplicantsController {
   @Post()
   create(@Request() req, @Body() data: CreateApplicantDto) {
     data.user = {
-      connect: { id: data.userId }
-    }
+      connect: { id: data.userId },
+    };
     data.job = {
-      connect: { id: data.jobId }
-    }
+      connect: { id: data.jobId },
+    };
     delete data.userId;
     delete data.jobId;
     return this.ApplicantsService.create(data);
@@ -30,24 +37,22 @@ export class ApplicantsController {
   }
 
   @Get(':query')
-  search(
-    @Param('query') query: string,
-  ) {
+  search(@Param('query') query: string) {
     return this.ApplicantsService.findAll({
       where: {
         OR: [
           {
             user: {
-              firstName: { contains: query }
-            }
+              firstName: { contains: query },
+            },
           },
           {
             user: {
-              lastName: { contains: query }
-            }
-          }
+              lastName: { contains: query },
+            },
+          },
         ],
-      }
+      },
     });
   }
 

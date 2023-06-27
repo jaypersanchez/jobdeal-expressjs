@@ -1,12 +1,21 @@
-import { Controller, Get, Post, Body, Request, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Request,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from '../auth/public.decorator';
 
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -16,15 +25,15 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.usersService.findAll({});
   }
 
+  @Public()
   @Get(':query')
-  search(
-    @Param('query') query: string,
-  ) {
+  search(@Param('query') query: string) {
     return this.usersService.findAll({
       where: {
         OR: [
@@ -35,10 +44,11 @@ export class UsersController {
             lastName: { contains: query },
           },
         ],
-      }
+      },
     });
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne({ id: +id });
@@ -47,7 +57,7 @@ export class UsersController {
   @Patch(':id')
   update(@Request() req, @Param('id') id: string, @Body() data: UpdateUserDto) {
     if (req.user.id === id) {
-      return { message: 'You can update your profile only', 'statusCode': 403 }
+      return { message: 'You can update your profile only', statusCode: 403 };
     }
     return this.usersService.update({ id: +id }, data);
   }

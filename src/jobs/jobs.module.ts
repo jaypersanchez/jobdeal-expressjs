@@ -6,19 +6,18 @@ import { ApplicantsService } from 'src/applicants/applicants.service';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
-
 @Module({
   imports: [
     MulterModule.register({
       storage: diskStorage({
         destination: './uploads/jobs',
         filename: function (_req, file, cb) {
-          cb(null, `${new Date().getTime()}_${file.originalname}`) //Appending .jpg
+          cb(null, `${new Date().getTime()}_${file.originalname}`); //Appending .jpg
         },
-      })
-    })
+      }),
+    }),
   ],
   controllers: [JobsController],
-  providers: [JobsService, PrismaService, ApplicantsService]
+  providers: [JobsService, PrismaService, ApplicantsService],
 })
 export class JobsModule {}

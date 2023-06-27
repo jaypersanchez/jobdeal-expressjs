@@ -5,7 +5,7 @@ import { Category, Prisma } from '@prisma/client';
 @Injectable()
 export class CategoriesService {
   constructor(private prisma: PrismaService) {}
-  
+
   async create(data: Prisma.CategoryCreateInput): Promise<Category> {
     return this.prisma.category.create({
       data,
@@ -37,7 +37,10 @@ export class CategoriesService {
     });
   }
 
-  async update(where: Prisma.CategoryWhereUniqueInput, data: Prisma.CategoryUpdateInput): Promise<Category> {
+  async update(
+    where: Prisma.CategoryWhereUniqueInput,
+    data: Prisma.CategoryUpdateInput,
+  ): Promise<Category> {
     return this.prisma.category.update({
       data,
       where,
