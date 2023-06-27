@@ -8,6 +8,4 @@ RUN yarn install
 
 RUN npx prisma generate
 
-RUN yarn build
-
 ENTRYPOINT ["sh", "docker-entrypoint.sh"]

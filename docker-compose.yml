@@ -3,10 +3,12 @@ services:
   db:
     container_name: jobdeal_db
     image: postgres:15.1
+    ports:
+      - "5432:5432"
     volumes:
       - /data/postgres:/data/postgres
     env_file:
-      - .env
+      - ./jobdeal-api/.env
 
   pgadmin:
     container_name: jobdeal_db_admin
@@ -16,28 +18,27 @@ services:
     volumes:
       - /data/pgadmin:/root/.pgadmin
     env_file:
-      - .env
+      - ./jobdeal-api/.env
 
   api:
     container_name: jobdeal_api
     build:
-      context: .
+      context: ./jobdeal-api
     env_file:
-      - .env
+      - ./jobdeal-api/.env
     ports:
       - "3000:3000"
     depends_on:
       - db
     volumes:
-      - ./uploads:/api/uploads
+      - ./jobdeal-api/uploads:/api/uploads
 
-  frontend:
-    container_name: jobdeal_frontend
+  web:
+    container_name: jobdeal_web
     build:
-      context: .
-      dockerfile: ./Dockerfile.frontend
+      context: ./jobdeal-web
     env_file:
-      - .env
+      - ./jobdeal-web/.env
     ports:
       - "3001:3001"
     depends_on:

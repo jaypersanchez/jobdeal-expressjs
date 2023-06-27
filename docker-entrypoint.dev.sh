@@ -3,6 +3,4 @@ set -e
 
 npx prisma migrate dev
 
-yarn build
-
-yarn start:prod
+yarn start:dev
