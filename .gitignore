@@ -39,3 +39,4 @@ lerna-debug.log*
 
 # Uplaods
 uploads/jobs
+uploads/users
