@@ -8,10 +8,10 @@ export class UpdateUserDto {
   lastName?: string;
 
   @ApiProperty()
-  email: string;
+  email?: string;
 
   @ApiProperty()
-  password: string;
+  password?: string;
 
   @ApiProperty()
   address?: string;
@@ -28,7 +28,6 @@ export class UpdateUserDto {
   @ApiProperty()
   locale?: string;
 
-  @ApiProperty()
   avatar?: string;
 
   @ApiProperty()
@@ -39,4 +38,11 @@ export class UpdateUserDto {
 
   @ApiProperty()
   timezone?: string;
+
+  @ApiProperty({
+    type: 'file',
+    format: 'binary',
+    required: false,
+  })
+  file?: Express.Multer.File
 }

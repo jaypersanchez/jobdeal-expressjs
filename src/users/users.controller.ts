@@ -7,13 +7,15 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from '../auth/public.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiBearerAuth()
 @Controller('users')
@@ -55,10 +57,20 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Request() req, @Param('id') id: string, @Body() data: UpdateUserDto) {
-    if (req.user.id === id) {
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
+  update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() data: UpdateUserDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (req.user.id !== +id) {
       return { message: 'You can update your profile only', statusCode: 403 };
     }
+
+    data.avatar = file.path;
+    delete data.file;
     return this.usersService.update({ id: +id }, data);
   }
 
