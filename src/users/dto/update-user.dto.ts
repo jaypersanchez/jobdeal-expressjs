@@ -11,6 +11,9 @@ export class UpdateUserDto {
   email?: string;
 
   @ApiProperty()
+  title?: string;
+
+  @ApiProperty()
   password?: string;
 
   @ApiProperty()

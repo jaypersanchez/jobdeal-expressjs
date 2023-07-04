@@ -37,6 +37,7 @@ model User {
   mobile            String?
   emailVerifiedAt  DateTime?
   password          String?
+  title             String?
   address           String?
   zip               String?
   city              String?
