@@ -69,8 +69,10 @@ export class UsersController {
       return { message: 'You can update your profile only', statusCode: 403 };
     }
 
-    data.avatar = file.path;
-    delete data.file;
+    if (file) {
+      data.avatar = file.path;
+      delete data.file;
+    }
     return this.usersService.update({ id: +id }, data);
   }
 
