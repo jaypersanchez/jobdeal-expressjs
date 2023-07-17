@@ -19,6 +19,7 @@ import { ApplicantsService } from 'src/applicants/applicants.service';
 import { ApplyJobDto } from './dto/apply-job.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Public } from 'src/auth/public.decorator';
+import { count } from 'console';
 
 @Controller('jobs')
 export class JobsController {
@@ -79,7 +80,7 @@ export class JobsController {
   }
 
   @Public()
-  @Get(':query')
+  @Get('search/:query')
   search(@Param('query') query: string) {
     return this.jobsService.findAll({
       where: {
@@ -91,6 +92,35 @@ export class JobsController {
             description: { contains: query },
           },
         ],
+      },
+    });
+  }
+
+  @ApiBearerAuth()
+  @Get('applied')
+  async applied(@Request() req) {
+    const applicants = await this.applicantsService.findAll({
+      where: {
+        userId: req.user.id,
+      },
+    });
+    if (applicants.length > 0) {
+      return this.jobsService.findAll({
+        where: {
+          id: { in: applicants.map((applicant) => applicant.jobId) },
+        },
+      });
+    } else {
+      return [];
+    }
+  }
+
+  @ApiBearerAuth()
+  @Get('posted')
+  posted(@Request() req) {
+    return this.jobsService.findAll({
+      where: {
+        userId: req.user.id,
       },
     });
   }
@@ -127,9 +157,22 @@ export class JobsController {
     @Body() data: ApplyJobDto,
   ) {
     const job = await this.jobsService.findOne({ id: +id });
-    if (req.user.id === job.id) {
+    if (req.user.id === job.userId) {
       return {
         message: "You can't apply for the job you posted",
+        statusCode: 400,
+      };
+    }
+
+    const applicants = await this.applicantsService.findAll({
+      where: {
+        jobId: +id,
+        userId: req.user.id,
+      },
+    });
+    if (applicants.length > 0) {
+      return {
+        message: 'You already applied for this job',
         statusCode: 400,
       };
     }
@@ -146,6 +189,23 @@ export class JobsController {
       },
       coverLetter: data.coverLetter,
       price: data.price,
+    });
+  }
+
+  @ApiBearerAuth()
+  @Get(':id/applicants')
+  async applicants(@Request() req, @Param('id') id: string) {
+    const job = await this.jobsService.findOne({ id: +id });
+    if (req.user.id !== job.id) {
+      return {
+        message: 'You are not the creator of this job',
+        statusCode: 400,
+      };
+    }
+    return this.applicantsService.findAll({
+      where: {
+        jobId: +id,
+      },
     });
   }
 }
