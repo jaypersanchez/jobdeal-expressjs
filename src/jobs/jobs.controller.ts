@@ -196,7 +196,7 @@ export class JobsController {
   @Get(':id/applicants')
   async applicants(@Request() req, @Param('id') id: string) {
     const job = await this.jobsService.findOne({ id: +id });
-    if (req.user.id !== job.id) {
+    if (req.user.id !== job.userId) {
       return {
         message: 'You are not the creator of this job',
         statusCode: 400,
