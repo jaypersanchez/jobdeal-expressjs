@@ -16,6 +16,12 @@ $ yarn install
 
 Create .env file from .env.sample and set the DATABASE_URL and JWT_SECRET_KEY values.
 
+## Generate Prisma schema
+
+```bash
+$ npx prisma generate
+```
+
 ## Migrate the database
 
 ```bash
